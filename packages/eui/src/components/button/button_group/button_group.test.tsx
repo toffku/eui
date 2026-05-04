@@ -13,6 +13,7 @@ import {
   render,
   waitForEuiToolTipHidden,
   waitForEuiToolTipVisible,
+  focusEuiToolTipTrigger,
 } from '../../../test/rtl';
 import { requiredProps as commonProps } from '../../../test';
 import { shouldRenderCustomStyles } from '../../../test/internal';
@@ -268,10 +269,13 @@ describe('EuiButtonGroup', () => {
       fireEvent.mouseOut(getByTestSubject('buttonWithTooltip'));
       await waitForEuiToolTipHidden();
 
-      fireEvent.focus(getByTestSubject('buttonWithTooltip'));
+      const cleanup = focusEuiToolTipTrigger(
+        getByTestSubject('buttonWithTooltip')
+      );
       await waitForEuiToolTipVisible();
       fireEvent.blur(getByTestSubject('buttonWithTooltip'));
       await waitForEuiToolTipHidden();
+      cleanup();
     });
 
     it('shows a tooltip on hover and focus when custom disabled via `hasAriaDisabled`', async () => {
@@ -302,10 +306,13 @@ describe('EuiButtonGroup', () => {
       fireEvent.mouseOut(getByTestSubject('buttonWithTooltip').parentElement!);
       await waitForEuiToolTipHidden();
 
-      fireEvent.focus(getByTestSubject('buttonWithTooltip'));
+      const cleanup = focusEuiToolTipTrigger(
+        getByTestSubject('buttonWithTooltip')
+      );
       await waitForEuiToolTipVisible();
       fireEvent.blur(getByTestSubject('buttonWithTooltip'));
       await waitForEuiToolTipHidden();
+      cleanup();
     });
 
     it('allows customizing the tooltip via `toolTipProps`', async () => {

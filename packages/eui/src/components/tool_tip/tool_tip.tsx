@@ -16,7 +16,8 @@ import React, {
   useState,
   ReactElement,
   ReactNode,
-  MouseEvent as ReactMouseEvent,
+  type MouseEvent as ReactMouseEvent,
+  type FocusEvent as ReactFocusEvent,
   HTMLAttributes,
 } from 'react';
 import classNames from 'classnames';
@@ -44,6 +45,18 @@ export const DEFAULT_TOOLTIP_OFFSET = 16;
 const delayToMsMap: { [key in ToolTipDelay]: number } = {
   regular: 250,
   long: 250 * 5,
+};
+
+/**
+ * `:focus-visible` may throw in browsers that don't support the selector,
+ * fall back to treating all focus as visible so tooltips still appear.
+ */
+const isFocusVisible = (element: Element): boolean => {
+  try {
+    return element.matches(':focus-visible');
+  } catch {
+    return element.matches(':focus');
+  }
 };
 
 interface ToolTipStyles {
@@ -277,7 +290,11 @@ export const EuiToolTip = forwardRef<EuiToolTipRef, EuiToolTipProps>(
     // If the anchor already has focus on mount (e.g. `autoFocus`), show the tooltip.
     // Important for StrictMode double-mount.
     useEffect(() => {
-      if (anchorRef.current?.contains(document.activeElement)) {
+      if (
+        anchorRef.current?.contains(document.activeElement) &&
+        document.activeElement != null &&
+        isFocusVisible(document.activeElement)
+      ) {
         setHasFocus(true);
         showToolTip();
       }
@@ -338,10 +355,15 @@ export const EuiToolTip = forwardRef<EuiToolTipRef, EuiToolTipProps>(
       componentDefaultsContext.EuiToolTip,
     ]);
 
-    const onFocus = useCallback(() => {
-      setHasFocus(true);
-      showToolTip();
-    }, [showToolTip]);
+    const onFocus = useCallback(
+      (e: ReactFocusEvent) => {
+        if (isFocusVisible(e.target as Element)) {
+          setHasFocus(true);
+          showToolTip();
+        }
+      },
+      [showToolTip]
+    );
 
     const onBlur = useCallback(() => {
       setHasFocus(false);

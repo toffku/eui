@@ -13,6 +13,7 @@ import {
   render,
   waitForEuiToolTipHidden,
   waitForEuiToolTipVisible,
+  focusEuiToolTipTrigger,
 } from '../../test/rtl';
 
 import { EuiSaturation } from './saturation';
@@ -70,7 +71,7 @@ describe('EuiSaturation', () => {
 
     const thumbElement = document.querySelector('.euiSaturation__indicator')!;
 
-    fireEvent.focus(thumbElement);
+    const cleanup = focusEuiToolTipTrigger(thumbElement);
 
     await waitForEuiToolTipVisible();
 
@@ -79,5 +80,6 @@ describe('EuiSaturation', () => {
     fireEvent.blur(thumbElement);
 
     await waitForEuiToolTipHidden();
+    cleanup();
   });
 });

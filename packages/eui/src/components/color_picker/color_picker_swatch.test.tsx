@@ -14,6 +14,7 @@ import {
   render,
   waitForEuiToolTipHidden,
   waitForEuiToolTipVisible,
+  focusEuiToolTipTrigger,
 } from '../../test/rtl';
 
 import { EuiColorPickerSwatch } from './color_picker_swatch';
@@ -61,7 +62,7 @@ describe('EuiColorPickerSwatch', () => {
 
       const swatchElement = getByTestSubject('color-picker-swatch');
 
-      fireEvent.focus(swatchElement);
+      const cleanup = focusEuiToolTipTrigger(swatchElement);
 
       await waitForEuiToolTipVisible();
 
@@ -70,6 +71,7 @@ describe('EuiColorPickerSwatch', () => {
       fireEvent.blur(swatchElement);
 
       await waitForEuiToolTipHidden();
+      cleanup();
     });
 
     test('it does not render a color label tooltip when `showToolTip` is `false`', async () => {

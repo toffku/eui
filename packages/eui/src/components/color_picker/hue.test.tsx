@@ -13,6 +13,7 @@ import {
   render,
   waitForEuiToolTipHidden,
   waitForEuiToolTipVisible,
+  focusEuiToolTipTrigger,
 } from '../../test/rtl';
 
 import { EuiHue } from './hue';
@@ -81,7 +82,7 @@ describe('EuiHue', () => {
 
     const thumbElement = document.querySelector('.euiHue__range')!;
 
-    fireEvent.focus(thumbElement);
+    const cleanup = focusEuiToolTipTrigger(thumbElement);
 
     await waitForEuiToolTipVisible();
 
@@ -90,5 +91,6 @@ describe('EuiHue', () => {
     fireEvent.blur(thumbElement);
 
     await waitForEuiToolTipHidden();
+    cleanup();
   });
 });
