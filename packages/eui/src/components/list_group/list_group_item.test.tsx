@@ -13,7 +13,7 @@ import { shouldRenderCustomStyles } from '../../test/internal';
 import { requiredProps } from '../../test/required_props';
 import { render } from '../../test/rtl';
 
-import { EuiListGroupItem, SIZES, COLORS } from './list_group_item';
+import { EuiListGroupItem, COLORS } from './list_group_item';
 
 describe('EuiListGroupItem', () => {
   shouldRenderCustomStyles(<EuiListGroupItem label="Label" />);
@@ -33,7 +33,11 @@ describe('EuiListGroupItem', () => {
       label="Label"
       toolTipText="Tooltip"
       showToolTip
-      data-test-subj="trigger"
+      toolTipProps={{
+        anchorProps: {
+          'data-test-subj': 'trigger',
+        },
+      }}
     />,
     {
       childProps: ['toolTipProps', 'toolTipProps.anchorProps'],
@@ -53,18 +57,6 @@ describe('EuiListGroupItem', () => {
   });
 
   describe('props', () => {
-    describe('size', () => {
-      SIZES.forEach((size) => {
-        test(`${size} is rendered`, () => {
-          const { container } = render(
-            <EuiListGroupItem label="Label" size={size} />
-          );
-
-          expect(container.firstChild).toMatchSnapshot();
-        });
-      });
-    });
-
     describe('color', () => {
       COLORS.forEach((color) => {
         test(`${color} is rendered`, () => {
@@ -94,6 +86,26 @@ describe('EuiListGroupItem', () => {
         );
 
         expect(container.firstChild).toMatchSnapshot();
+      });
+    });
+
+    describe('hasAriaDisabled', () => {
+      it('renders interactive items with `aria-disabled` when `isDisabled=true`', () => {
+        const { getByTestSubject } = render(
+          <EuiListGroupItem
+            label="Label"
+            hasAriaDisabled
+            isDisabled
+            onClick={() => {}}
+            data-test-subj="euiListGroupItem"
+          />
+        );
+
+        const button = getByTestSubject('euiListGroupItem');
+
+        expect(button).toBeEuiDisabled();
+        expect(button).toHaveAttribute('aria-disabled', 'true');
+        expect(button).not.toHaveAttribute('disabled');
       });
     });
 
@@ -236,7 +248,7 @@ describe('EuiListGroupItem', () => {
     describe('href and onClick', () => {
       test('is rendered', () => {
         const { container } = render(
-          <EuiListGroupItem label="" onClick={() => {}} href="#" />
+          <EuiListGroupItem label="Label" onClick={() => {}} href="#" />
         );
 
         expect(container.firstChild).toMatchSnapshot();
@@ -246,7 +258,7 @@ describe('EuiListGroupItem', () => {
     describe('style', () => {
       test('is rendered', () => {
         const { container } = render(
-          <EuiListGroupItem label="" style={{ color: 'red' }} />
+          <EuiListGroupItem label="Label" style={{ color: 'red' }} />
         );
 
         expect(container.firstChild).toMatchSnapshot();
@@ -260,8 +272,10 @@ describe('EuiListGroupItem', () => {
             label="Label"
             toolTipText="Tooltip"
             showToolTip
-            data-test-subj="trigger"
             toolTipProps={{
+              anchorProps: {
+                'data-test-subj': 'trigger',
+              },
               'data-test-subj': 'tooltip',
             }}
           />
@@ -305,7 +319,7 @@ describe('EuiListGroupItem', () => {
 
     test('if both iconType and icon are provided but still renders', () => {
       const { container } = render(
-        <EuiListGroupItem label="" iconType="empty" icon={<span />} />
+        <EuiListGroupItem label="Label" iconType="empty" icon={<span />} />
       );
 
       expect(consoleStub).toHaveBeenCalled();
