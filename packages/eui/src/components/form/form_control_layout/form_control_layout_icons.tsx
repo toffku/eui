@@ -64,12 +64,6 @@ export const EuiFormControlLayoutIcons = ({
   isInvalid,
   isDropdown,
 }: EuiFormControlLayoutIconsProps) => {
-  const customIcon = renderCustomIcon(icon, isDisabled);
-  const loadingSpinner = renderLoadingSpinner(isLoading);
-  const clearButton = renderClearButton(clear, isDisabled);
-  const invalidIcon = renderInvalidIcon(isInvalid);
-  const dropdownIcon = renderDropdownIcon(isDropdown, isDisabled);
-
   return (
     <RenderWithEuiStylesMemoizer>
       {(stylesMemoizer) => {
@@ -94,11 +88,11 @@ export const EuiFormControlLayoutIcons = ({
         ];
         return (
           <div css={cssStyles} className="euiFormControlLayoutIcons">
-            {clearButton}
-            {loadingSpinner}
-            {invalidIcon}
-            {customIcon}
-            {dropdownIcon}
+            <ClearButton clear={clear} isDisabled={isDisabled} />
+            <LoadingSpinner isLoading={isLoading} />
+            <InvalidIcon isInvalid={isInvalid} />
+            <CustomIcon icon={icon} isDisabled={isDisabled} />
+            <DropdownIcon isDropdown={isDropdown} isDisabled={isDisabled} />
           </div>
         );
       }}
@@ -106,10 +100,10 @@ export const EuiFormControlLayoutIcons = ({
   );
 };
 
-const renderCustomIcon = (
-  icon: EuiFormControlLayoutIconsProps['icon'],
-  isDisabled: EuiFormControlLayoutIconsProps['isDisabled']
-) => {
+const CustomIcon = ({
+  icon,
+  isDisabled,
+}: Pick<EuiFormControlLayoutIconsProps, 'icon' | 'isDisabled'>) => {
   if (!icon) {
     return null;
   }
@@ -132,10 +126,10 @@ const renderCustomIcon = (
   );
 };
 
-const renderDropdownIcon = (
-  isDropdown: EuiFormControlLayoutIconsProps['isDropdown'],
-  isDisabled: EuiFormControlLayoutIconsProps['isDisabled']
-) => {
+const DropdownIcon = ({
+  isDropdown,
+  isDisabled,
+}: Pick<EuiFormControlLayoutIconsProps, 'isDropdown' | 'isDisabled'>) => {
   if (!isDropdown) {
     return null;
   }
@@ -149,9 +143,9 @@ const renderDropdownIcon = (
   );
 };
 
-const renderLoadingSpinner = (
-  isLoading: EuiFormControlLayoutIconsProps['isLoading']
-) => {
+const LoadingSpinner = ({
+  isLoading,
+}: Pick<EuiFormControlLayoutIconsProps, 'isLoading'>) => {
   if (!isLoading) {
     return null;
   }
@@ -159,10 +153,10 @@ const renderLoadingSpinner = (
   return <EuiLoadingSpinner size="m" />;
 };
 
-const renderClearButton = (
-  clear: EuiFormControlLayoutIconsProps['clear'],
-  isDisabled: EuiFormControlLayoutIconsProps['isDisabled']
-) => {
+const ClearButton = ({
+  clear,
+  isDisabled,
+}: Pick<EuiFormControlLayoutIconsProps, 'clear' | 'isDisabled'>) => {
   if (!clear) {
     return null;
   }
@@ -176,9 +170,9 @@ const renderClearButton = (
   );
 };
 
-const renderInvalidIcon = (
-  isInvalid: EuiFormControlLayoutIconsProps['isInvalid']
-) => {
+const InvalidIcon = ({
+  isInvalid,
+}: Pick<EuiFormControlLayoutIconsProps, 'isInvalid'>) => {
   if (!isInvalid) {
     return null;
   }
